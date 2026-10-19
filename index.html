@@ -1,0 +1,2539 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Absensi Teknisi — Trinity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --brand-magenta: #ec008c;
+    --brand-blue:    #2a2d7a;
+    --brand-purple:  #7a2482;
+    
+    --g-blue:      #1a73e8;
+    --g-blue-dark: #1557b0;
+    --g-blue-light:#e8f0fe;
+    --g-red:       #ea4335;
+    --g-red-light: #fce8e6;
+    --g-yellow:    #fbbc04;
+    --g-yellow-light:#fef7e0;
+    --g-yellow-dark: #b8860b;
+    --g-green:     #34a853;
+    --g-green-dark:#1e8e3e;
+    --g-green-light:#e6f4ea;
+    --g-purple:    #9334e6;
+    --g-purple-light:#f3e8fd;
+    --g-orange:    #f57c00;
+    --g-orange-light:#fff3e0;
+
+    --surface:     #ffffff;
+    --surface-2:   #f8f9fa;
+    --surface-3:   #f1f3f4;
+    --border:      #dadce0;
+    --border-soft: #e8eaed;
+
+    --text:        #202124;
+    --text-2:      #5f6368;
+    --text-3:      #80868b;
+
+    --shadow-1: 0 1px 2px 0 rgba(60,64,67,.3), 0 1px 3px 1px rgba(60,64,67,.15);
+    --shadow-2: 0 1px 3px 0 rgba(60,64,67,.3), 0 4px 8px 3px rgba(60,64,67,.15);
+    --shadow-3: 0 4px 8px 0 rgba(60,64,67,.3), 0 8px 24px 4px rgba(60,64,67,.15);
+
+    --radius: 12px;
+    --radius-lg: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--surface-2);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ---------- TOP APP BAR ---------- */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-soft);
+    padding: 0 20px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .topbar-brand { display: flex; align-items: center; gap: 14px; }
+  
+  .logo-trinity { height: 28px; width: auto; display: block; }
+  
+  .brand-text { display: flex; flex-direction: column; line-height: 1.15; padding-left: 14px; border-left: 1px solid var(--border); }
+  .brand-text .b1 { font-weight: 700; font-size: 15px; color: var(--text); letter-spacing: -.2px; }
+  .brand-text .b2 { font-size: 11px; color: var(--text-2); font-family: 'Roboto Mono', monospace; }
+
+  .user-chip { display: flex; align-items: center; gap: 12px; }
+  .user-info { text-align: right; line-height: 1.2; }
+  .user-info .nm { font-size: 13px; font-weight: 500; color: var(--text); }
+  .user-info .rl { font-size: 11px; color: var(--text-2); }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--brand-magenta), var(--brand-blue));
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
+
+  /* ---------- LOGIN ---------- */
+  .login-wrap {
+    min-height: calc(100vh - 64px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(236,0,140,.06), transparent 40%),
+      radial-gradient(circle at 90% 100%, rgba(42,45,122,.06), transparent 40%),
+      var(--surface-2);
+  }
+  .login-card {
+    width: 100%; max-width: 400px;
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    box-shadow: var(--shadow-2);
+  }
+  .login-card h1 { font-size: 24px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 4px; }
+  .login-card .sub { color: var(--text-2); font-size: 13px; margin-bottom: 24px; font-family: 'Roboto', sans-serif; }
+
+  /* ---------- FIELDS ---------- */
+  label {
+    display: block; font-size: 12px; font-weight: 500;
+    color: var(--text-2); margin: 14px 0 6px; letter-spacing: .2px;
+  }
+  input, textarea, select {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: 8px;
+    font-size: 14px; font-family: 'Roboto', sans-serif;
+    background: var(--surface); color: var(--text);
+    outline: none; transition: border-color .15s, box-shadow .15s;
+  }
+  input:hover, textarea:hover, select:hover { border-color: #bdc1c6; }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--brand-magenta);
+    box-shadow: 0 0 0 3px rgba(236,0,140,.15);
+  }
+  textarea { resize: vertical; min-height: 60px; }
+  select {
+    cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%235f6368'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+  }
+
+  /* ---------- BUTTONS ---------- */
+  .btn {
+    border: none; border-radius: 8px;
+    font-weight: 500; font-size: 14px; cursor: pointer;
+    font-family: 'Google Sans', 'Roboto', sans-serif;
+    transition: background .15s, box-shadow .15s, transform .1s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-primary {
+    width: 100%; padding: 11px 20px;
+    background: var(--brand-magenta); color: #fff; box-shadow: var(--shadow-1);
+  }
+  .btn-primary:hover { background: #c50075; box-shadow: var(--shadow-2); }
+  .btn-primary:disabled { background: #e0e0e0; color: #9e9e9e; cursor: not-allowed; }
+  
+  .btn-outline {
+    padding: 9px 16px; background: transparent;
+    border: 1px solid var(--border); color: var(--brand-blue);
+  }
+  .btn-outline:hover { background: var(--g-blue-light); border-color: var(--brand-blue); }
+  .btn-tonal { padding: 9px 16px; background: var(--g-blue-light); color: var(--brand-blue); }
+  .btn-tonal:hover { background: #d2e3fc; }
+  .btn-danger {
+    padding: 8px 14px; background: transparent;
+    border: 1px solid var(--border); color: var(--text-2); font-size: 13px;
+  }
+  .btn-danger:hover { background: var(--g-red-light); border-color: #f4b4ae; color: var(--g-red); }
+  .btn-danger-solid { padding: 9px 16px; background: var(--g-red); color: #fff; }
+  .btn-danger-solid:hover { background: #c5221f; }
+  .btn-success { padding: 9px 16px; background: var(--g-green); color: #fff; }
+  .btn-success:hover { background: var(--g-green-dark); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 6px; }
+
+  .error { color: var(--g-red); font-size: 13px; margin-top: 10px; text-align: center; min-height: 18px; }
+
+  .demo-box {
+    margin-top: 20px; padding: 14px;
+    background: var(--surface-3); border-radius: var(--radius);
+    font-size: 12px; color: var(--text-2);
+    font-family: 'Roboto Mono', monospace; line-height: 1.9;
+  }
+  .demo-box strong { color: var(--text); font-family: 'Google Sans', sans-serif; }
+  .demo-box .k { color: var(--brand-magenta); font-weight: 500; }
+
+  /* ---------- MAIN LAYOUT ---------- */
+  .container { max-width: 900px; margin: 0 auto; padding: 24px 16px 60px; }
+  .hidden { display: none !important; }
+
+  /* ---------- CARDS ---------- */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    box-shadow: var(--shadow-1);
+    margin-bottom: 18px;
+  }
+  .card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .card-head .icon-badge {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; background: var(--g-blue-light); color: var(--brand-blue);
+  }
+  .card-head h3 { font-size: 16px; font-weight: 500; letter-spacing: -.1px; }
+  .card .desc {
+    font-size: 12.5px; color: var(--text-2);
+    font-family: 'Roboto', sans-serif;
+    margin-bottom: 14px; padding-left: 42px;
+  }
+
+  .row { display: flex; gap: 12px; }
+  .col { flex: 1; min-width: 0; }
+
+  /* ---------- KLASIFIKASI ---------- */
+  .klasifikasi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .klas-item {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+    background: var(--surface);
+    transition: all .15s;
+    user-select: none;
+    justify-content: center;
+  }
+  .klas-item:hover { background: var(--surface-3); }
+  .klas-item input { display: none; }
+  .klas-item .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+  .klas-item[data-type="masuk"].selected { background: var(--g-green-light); border-color: var(--g-green); color: var(--g-green-dark); }
+  .klas-item[data-type="masuk"].selected .dot { background: var(--g-green); border-color: var(--g-green); }
+  .klas-item[data-type="izin"].selected { background: var(--g-blue-light); border-color: var(--g-blue); color: var(--g-blue-dark); }
+  .klas-item[data-type="izin"].selected .dot { background: var(--g-blue); border-color: var(--g-blue); }
+  .klas-item[data-type="cuti"].selected { background: var(--g-purple-light); border-color: var(--g-purple); color: var(--g-purple); }
+  .klas-item[data-type="cuti"].selected .dot { background: var(--g-purple); border-color: var(--g-purple); }
+  .klas-item[data-type="sakit"].selected { background: var(--g-yellow-light); border-color: var(--g-yellow); color: #8a6d0b; }
+  .klas-item[data-type="sakit"].selected .dot { background: var(--g-yellow); border-color: var(--g-yellow); }
+
+  /* ---------- INFO BOX ---------- */
+  .info-box {
+    padding: 12px 14px;
+    background: var(--g-blue-light);
+    border-left: 3px solid var(--brand-blue);
+    border-radius: 8px;
+    font-size: 12.5px;
+    color: var(--brand-blue);
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+  .info-box strong { color: var(--brand-blue); }
+
+  /* ---------- GPS ---------- */
+  .gps-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .gps-status {
+    font-size: 12.5px; color: var(--text-2);
+    flex: 1; min-width: 150px;
+    font-family: 'Roboto Mono', monospace;
+  }
+  .gps-status.ok { color: var(--g-green-dark); font-weight: 500; }
+  .gps-status.err { color: var(--g-red); }
+
+  /* ---------- FOTO ---------- */
+  .foto-box { margin-top: 12px; position: relative; width: fit-content; }
+  .foto-box img {
+    width: 140px; height: 140px; object-fit: cover;
+    border-radius: 10px; border: 1px solid var(--border);
+    display: block; box-shadow: var(--shadow-1);
+  }
+  .foto-box button {
+    position: absolute; top: -8px; right: -8px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--g-red); color: #fff;
+    border: 2px solid #fff; cursor: pointer;
+    font-size: 14px; font-weight: bold; line-height: 1;
+    box-shadow: var(--shadow-1);
+  }
+
+  .msg { margin-top: 12px; font-size: 13px; text-align: center; min-height: 18px; font-family: 'Roboto', sans-serif; }
+  .msg.ok { color: var(--g-green-dark); font-weight: 500; }
+  .msg.err { color: var(--g-red); }
+
+  /* ---------- LIST ---------- */
+  .list { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+  .empty {
+    color: var(--text-3); font-size: 13px;
+    text-align: center; padding: 30px 0;
+    font-family: 'Roboto', sans-serif;
+  }
+  .item {
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius);
+    padding: 14px;
+    display: flex; gap: 12px; align-items: flex-start;
+    background: var(--surface);
+    transition: box-shadow .15s, transform .15s;
+    position: relative;
+    flex-wrap: wrap;
+  }
+  .item:hover { box-shadow: var(--shadow-1); transform: translateY(-1px); }
+  .item img.thumb {
+    width: 60px; height: 60px; object-fit: cover;
+    border-radius: 8px; cursor: zoom-in;
+    border: 1px solid var(--border); flex-shrink: 0;
+  }
+  .info { flex: 1; min-width: 0; font-size: 13px; line-height: 1.6; font-family: 'Roboto', sans-serif; }
+  .info .name {
+    font-weight: 500; color: var(--text);
+    font-family: 'Google Sans', sans-serif; font-size: 14px; margin-bottom: 2px;
+  }
+  .info .title {
+    font-weight: 500; color: var(--text);
+    font-family: 'Google Sans', sans-serif;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .pill {
+    display: inline-block; font-size: 11px; padding: 2px 8px;
+    border-radius: 10px; font-weight: 500;
+    font-family: 'Google Sans', sans-serif;
+    background: var(--surface-3); color: var(--text-2);
+  }
+  .pill.loc-drc   { background: var(--g-green-light); color: var(--g-green-dark); }
+  .pill.loc-sapta { background: var(--g-blue-light); color: var(--g-blue-dark); }
+  .pill.type-masuk  { background: var(--g-green-light); color: var(--g-green-dark); }
+  .pill.type-izin   { background: var(--g-blue-light); color: var(--g-blue-dark); }
+  .pill.type-cuti   { background: var(--g-purple-light); color: var(--g-purple); }
+  .pill.type-sakit  { background: var(--g-yellow-light); color: #8a6d0b; }
+
+  .pill.status-pending  { background: var(--g-orange-light); color: var(--g-orange); }
+  .pill.status-approved { background: var(--g-green-light); color: var(--g-green-dark); }
+  .pill.status-rejected { background: var(--g-red-light); color: var(--g-red); }
+
+  .info .meta {
+    color: var(--text-2); font-size: 12.5px;
+    word-wrap: break-word;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .info a { color: var(--g-blue); text-decoration: none; }
+  .info a:hover { text-decoration: underline; }
+  .info .catatan {
+    margin-top: 6px; padding: 8px 10px;
+    background: var(--g-yellow-light);
+    border-left: 3px solid var(--g-yellow);
+    border-radius: 4px; font-size: 12px;
+    color: #8a6d0b; word-wrap: break-word;
+  }
+  .info .reject-reason {
+    margin-top: 6px; padding: 8px 10px;
+    background: var(--g-red-light);
+    border-left: 3px solid var(--g-red);
+    border-radius: 4px; font-size: 12px;
+    color: #a50e0e; word-wrap: break-word;
+  }
+
+  .item-actions {
+    display: flex; gap: 6px; margin-left: auto;
+    align-self: flex-start; flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+  .icon-btn {
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: all .15s;
+  }
+  .icon-btn:hover { background: var(--g-blue-light); border-color: var(--brand-blue); }
+  .icon-btn.del:hover { background: var(--g-red-light); border-color: var(--g-red); }
+  
+  .btn-approve { padding: 5px 10px; font-size: 12px; border-radius: 6px; background: var(--g-green); color: #fff; }
+  .btn-approve:hover { background: var(--g-green-dark); }
+  .btn-reject { padding: 5px 10px; font-size: 12px; border-radius: 6px; background: var(--g-red); color: #fff; }
+  .btn-reject:hover { background: #c5221f; }
+
+  /* ---------- TABS ---------- */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--border-soft);
+    margin-bottom: 18px;
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Google Sans', sans-serif;
+    color: var(--text-2);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .15s;
+    margin-bottom: -1px;
+    white-space: nowrap;
+    position: relative;
+  }
+  .tab:hover { background: var(--surface-3); color: var(--text); }
+  .tab.active {
+    color: var(--brand-magenta);
+    border-bottom-color: var(--brand-magenta);
+    background: transparent;
+  }
+  .tab .badge-count {
+    display: inline-block;
+    background: var(--brand-magenta);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 1px 6px;
+    margin-left: 4px;
+    min-width: 18px;
+    text-align: center;
+  }
+
+  /* ---------- ADMIN ---------- */
+  .filter-row { display: flex; gap: 8px; margin: 6px 0 16px; flex-wrap: wrap; }
+  .filter-row input[type="text"] { flex: 2; min-width: 150px; }
+  .filter-row input[type="date"] { flex: 1; min-width: 130px; }
+  .filter-row select { flex: 1; min-width: 130px; }
+  .filter-row .btn { padding: 10px 16px; }
+
+  .stats { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .stat {
+    flex: 1; min-width: 100px;
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    padding: 14px; border-radius: var(--radius);
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .stat::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+  .stat.blue::before    { background: var(--g-blue); }
+  .stat.green::before   { background: var(--g-green); }
+  .stat.yellow::before  { background: var(--g-yellow); }
+  .stat.purple::before  { background: var(--g-purple); }
+  .stat.red::before     { background: var(--g-red); }
+  .stat.orange::before  { background: var(--g-orange); }
+  .stat .num {
+    font-size: 22px; font-weight: 700; color: var(--text);
+    letter-spacing: -.5px;
+    font-family: 'Google Sans', sans-serif;
+  }
+  .stat .lbl { font-size: 11px; color: var(--text-2); margin-top: 2px; font-family: 'Roboto', sans-serif; }
+
+  /* ---------- LAPORAN ---------- */
+  .report-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .report-controls .btn { padding: 10px 16px; }
+  .report-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: var(--surface);
+  }
+  .report-title {
+    background: linear-gradient(135deg, var(--brand-magenta), var(--brand-purple));
+    color: #fff; padding: 16px 20px;
+    font-size: 16px; font-weight: 500;
+    font-family: 'Google Sans', sans-serif;
+  }
+  .report-title .sub { font-size: 12px; opacity: .9; font-weight: 400; margin-top: 2px; font-family: 'Roboto', sans-serif; }
+  .report-table { width: 100%; border-collapse: collapse; font-family: 'Roboto', sans-serif; font-size: 13px; }
+  .report-table thead th {
+    background: var(--surface-3);
+    padding: 10px 12px; text-align: left;
+    font-weight: 600; color: var(--text-2); font-size: 12px;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase; letter-spacing: .3px;
+  }
+  .report-table thead th.center { text-align: center; }
+  .report-table tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border-soft); color: var(--text); }
+  .report-table tbody td.center { text-align: center; font-weight: 600; font-family: 'Roboto Mono', monospace; }
+  .report-table tbody tr:last-child td { border-bottom: none; }
+  .report-table tbody tr:hover { background: var(--surface-2); }
+  .report-table tfoot td {
+    padding: 12px; background: var(--surface-3);
+    font-weight: 700; border-top: 2px solid var(--border);
+    font-family: 'Google Sans', sans-serif;
+  }
+  .report-table tfoot td.center { text-align: center; font-family: 'Roboto Mono', monospace; }
+  .report-actions {
+    padding: 12px 16px; background: var(--surface-2);
+    border-top: 1px solid var(--border-soft);
+    display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;
+  }
+
+  /* ============================================================
+     KALENDER
+     ============================================================ */
+  .cal-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .cal-nav { display: flex; align-items: center; gap: 8px; }
+  .cal-nav button {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 8px;
+    width: 36px; height: 36px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--text-2);
+    transition: all .15s;
+  }
+  .cal-nav button:hover { background: var(--g-blue-light); border-color: var(--brand-magenta); color: var(--brand-magenta); }
+  .cal-title {
+    font-size: 18px; font-weight: 700;
+    font-family: 'Google Sans', sans-serif;
+    letter-spacing: -.3px; color: var(--text);
+    min-width: 190px; text-align: center;
+  }
+  .cal-title .year { color: var(--brand-magenta); }
+  .cal-filter { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .cal-filter select { width: auto; min-width: 170px; padding: 8px 32px 8px 10px; font-size: 13px; }
+
+  .cal-weekdays {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    gap: 4px; margin-bottom: 6px;
+  }
+  .cal-weekdays div {
+    text-align: center; font-size: 11px; font-weight: 700;
+    color: var(--text-2); padding: 8px 0;
+    text-transform: uppercase; letter-spacing: .5px;
+    font-family: 'Google Sans', sans-serif;
+  }
+  .cal-weekdays div.sun { color: var(--g-red); }
+
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-cell {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+    padding: 6px 4px;
+    min-height: 70px;
+    display: flex; flex-direction: column; gap: 3px;
+    position: relative;
+    transition: border-color .15s, box-shadow .15s;
+    cursor: default;
+  }
+  .cal-cell.has-data { cursor: pointer; }
+  .cal-cell.has-data:hover {
+    border-color: var(--brand-magenta);
+    box-shadow: 0 0 0 2px rgba(236,0,140,.12);
+  }
+  .cal-cell.other-month { background: var(--surface-2); opacity: .45; }
+  .cal-cell.today {
+    border-color: var(--brand-magenta); border-width: 2px;
+    background: #fdf2f8;
+  }
+  .cal-cell.today .cal-day {
+    background: var(--brand-magenta); color: #fff;
+    border-radius: 50%; width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cal-cell.holiday { background: #fef5f4; }
+
+  .cal-day {
+    font-size: 13px; font-weight: 600;
+    font-family: 'Google Sans', sans-serif;
+    color: var(--text);
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cal-cell.sun .cal-day { color: var(--g-red); }
+  .cal-cell.holiday .cal-day { color: var(--g-red); }
+
+  .cal-dots { display: flex; flex-wrap: wrap; gap: 2px; margin-top: auto; }
+  .cal-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .cal-dot.masuk  { background: var(--g-green); }
+  .cal-dot.izin   { background: var(--g-blue); }
+  .cal-dot.cuti   { background: var(--g-purple); }
+  .cal-dot.sakit  { background: var(--g-yellow); }
+  .cal-dot.pending { background: var(--g-orange); }
+
+  .cal-holiday-label {
+    font-size: 9px; color: var(--g-red); font-weight: 600;
+    font-family: 'Roboto', sans-serif; line-height: 1.15;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+
+  .cal-legend {
+    display: flex; flex-wrap: wrap; gap: 14px;
+    margin-top: 14px; padding-top: 12px;
+    border-top: 1px solid var(--border-soft);
+    font-size: 12px; font-family: 'Roboto', sans-serif;
+    color: var(--text-2);
+  }
+  .cal-legend span { display: flex; align-items: center; gap: 6px; }
+  .cal-legend .cal-dot { width: 9px; height: 9px; }
+
+  .cal-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px; margin-top: 14px;
+  }
+  .cal-sum-item {
+    background: var(--surface-2);
+    border-radius: 10px; padding: 12px;
+    text-align: center;
+    border: 1px solid var(--border-soft);
+  }
+  .cal-sum-item .n {
+    font-size: 22px; font-weight: 700;
+    font-family: 'Google Sans', sans-serif; letter-spacing: -.5px;
+  }
+  .cal-sum-item .l { font-size: 11px; color: var(--text-2); margin-top: 2px; font-family: 'Roboto', sans-serif; }
+  .cal-sum-item.masuk  .n { color: var(--g-green-dark); }
+  .cal-sum-item.izin   .n { color: var(--g-blue-dark); }
+  .cal-sum-item.cuti   .n { color: var(--g-purple); }
+  .cal-sum-item.sakit  .n { color: var(--g-yellow-dark); }
+  .cal-sum-item.pending .n { color: var(--g-orange); }
+
+  .cal-day-panel {
+    margin-top: 16px;
+    border-top: 1px solid var(--border-soft);
+    padding-top: 14px;
+  }
+  .cal-day-panel h4 {
+    font-size: 14px; font-weight: 500;
+    font-family: 'Google Sans', sans-serif;
+    color: var(--text); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .cal-day-panel h4 .date-badge {
+    background: var(--g-blue-light); color: var(--brand-blue);
+    padding: 2px 8px; border-radius: 8px;
+    font-size: 11px; font-family: 'Roboto Mono', monospace;
+  }
+
+  /* ---------- MINI CALENDAR ---------- */
+  #miniCalWrap {
+    background: var(--surface-2);
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 10px;
+  }
+  .mini-cal-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 6px; margin-bottom: 8px;
+  }
+  .mini-cal-nav { display: flex; align-items: center; gap: 4px; }
+  .mini-cal-nav button {
+    width: 26px; height: 26px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: var(--text-2);
+    transition: all .15s;
+  }
+  .mini-cal-nav button:hover {
+    background: var(--g-blue-light); border-color: var(--brand-magenta); color: var(--brand-magenta);
+  }
+  .mini-cal-title {
+    font-size: 13px; font-weight: 600;
+    font-family: 'Google Sans', sans-serif;
+    color: var(--text);
+  }
+  .mini-cal-title .yr { color: var(--brand-magenta); }
+  .mini-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .mini-cal-wd {
+    text-align: center; font-size: 10px;
+    font-weight: 700; color: var(--text-2);
+    padding: 3px 0; text-transform: uppercase;
+    font-family: 'Google Sans', sans-serif;
+  }
+  .mini-cal-wd.sun { color: var(--g-red); }
+  .mini-cal-cell {
+    aspect-ratio: 1;
+    border-radius: 5px;
+    background: var(--surface);
+    border: 1px solid transparent;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11.5px; font-weight: 500;
+    font-family: 'Roboto', sans-serif;
+    color: var(--text);
+    cursor: pointer;
+    position: relative;
+    transition: all .12s;
+    padding: 0;
+  }
+  .mini-cal-cell:hover:not(.other) {
+    background: var(--g-blue-light);
+    border-color: var(--brand-magenta);
+    color: var(--brand-magenta);
+  }
+  .mini-cal-cell.other { color: #c8ccd0; cursor: default; background: transparent; }
+  .mini-cal-cell.sun { color: var(--g-red); }
+  .mini-cal-cell.holiday { background: #fdecea; color: var(--g-red); font-weight: 700; }
+  .mini-cal-cell.today {
+    background: var(--brand-magenta); color: #fff; font-weight: 700;
+  }
+  .mini-cal-cell.selected {
+    background: var(--g-green); color: #fff; font-weight: 700;
+    border-color: var(--g-green-dark);
+  }
+  .mini-cal-cell.has-data::after {
+    content: '';
+    position: absolute;
+    bottom: 2px; left: 50%;
+    transform: translateX(-50%);
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--g-green);
+  }
+  .mini-cal-cell.today.has-data::after,
+  .mini-cal-cell.selected.has-data::after { background: #fff; }
+
+  /* ---------- MODAL ---------- */
+  .modal {
+    position: fixed; inset: 0;
+    background: rgba(32,33,36,.85);
+    display: none; align-items: center; justify-content: center;
+    z-index: 1000; padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .modal.show { display: flex; }
+  .modal img.modal-content { max-width: 100%; max-height: 85vh; border-radius: 12px; box-shadow: var(--shadow-3); }
+  .modal .close {
+    position: absolute; top: 16px; right: 24px;
+    color: #fff; font-size: 36px; cursor: pointer;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; transition: background .15s;
+  }
+  .modal .close:hover { background: rgba(255,255,255,.15); }
+
+  /* ---------- EDIT MODAL ---------- */
+  .edit-dialog {
+    width: 100%; max-width: 520px; max-height: 92vh;
+    overflow-y: auto;
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-3);
+    display: flex; flex-direction: column;
+  }
+  .edit-header {
+    padding: 20px 22px 14px;
+    border-bottom: 1px solid var(--border-soft);
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 12px;
+  }
+  .edit-header h3 { font-size: 17px; font-weight: 500; font-family: 'Google Sans', sans-serif; letter-spacing: -.1px; }
+  .edit-header .subh { font-size: 12px; color: var(--text-2); font-family: 'Roboto', sans-serif; margin-top: 2px; }
+  .edit-header .x-btn {
+    border: none; background: transparent; cursor: pointer;
+    font-size: 24px; color: var(--text-2);
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; line-height: 1;
+  }
+  .edit-header .x-btn:hover { background: var(--surface-3); }
+  .edit-body { padding: 4px 22px 16px; }
+  .edit-footer {
+    padding: 14px 22px 18px;
+    border-top: 1px solid var(--border-soft);
+    display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;
+    background: var(--surface-2);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+  .edit-footer .btn-primary,
+  .edit-footer .btn-outline,
+  .edit-footer .btn-danger-solid { width: auto; padding: 10px 20px; }
+
+  .foot-note {
+    text-align: center; color: var(--text-3);
+    font-size: 11px; padding: 20px 0 0;
+    font-family: 'Roboto Mono', monospace;
+  }
+
+  @media (max-width: 640px) {
+    .row { flex-direction: column; gap: 0; }
+    .topbar { padding: 0 14px; }
+    .user-info { display: none; }
+    .brand-text { display: none; }
+    .filter-row { flex-direction: column; }
+    .card { padding: 18px; }
+    .klasifikasi-grid { grid-template-columns: repeat(2, 1fr); }
+    .report-table { font-size: 11px; }
+    .report-table thead th, .report-table tbody td { padding: 8px 6px; }
+    .item-actions { flex-direction: column; }
+    .cal-cell { min-height: 54px; padding: 4px 2px; }
+    .cal-day { font-size: 12px; width: 20px; height: 20px; }
+    .cal-title { font-size: 15px; min-width: 140px; }
+    .cal-weekdays div { font-size: 10px; padding: 6px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="loginPage" class="page active">
+  <header class="topbar">
+    <div class="topbar-brand">
+      <svg class="logo-trinity" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(0, 5)">
+          <path d="M 20 0 L 40 38 L 0 38 Z" fill="#ec008c"/>
+          <path d="M 20 38 L 40 38 L 30 22 Z" fill="#2a2d7a"/>
+          <path d="M 0 38 L 20 38 L 10 22 Z" fill="#7a2482"/>
+          <circle cx="20" cy="26" r="8" fill="#fff"/>
+        </g>
+        <text x="50" y="38" font-family="'Google Sans', sans-serif" font-weight="900" font-size="32" fill="#000" letter-spacing="-1">trinity</text>
+      </svg>
+      <div class="brand-text">
+        <span class="b1">Absensi Teknisi</span>
+        <span class="b2">/ kehadiran-kantor</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="login-wrap">
+    <div class="login-card">
+      <h1>Masuk</h1>
+      <p class="sub">Silakan login sesuai peran Anda.</p>
+      <form id="loginForm" autocomplete="off">
+        <label for="loginUser">Username</label>
+        <input id="loginUser" type="text" placeholder="cth: adam" required>
+        <label for="loginPass">Password</label>
+        <input id="loginPass" type="password" placeholder="••••" required>
+        <button type="submit" class="btn btn-primary" id="btnLogin">Masuk →</button>
+        <p id="loginError" class="error"></p>
+      </form>
+      <div class="demo-box">
+        <strong>Akun demo:</strong><br>
+        Teknisi → <span class="k">adam</span> / <span class="k">husaini</span> / <span class="k">angga</span><br>
+        Pass → <span class="k">123</span><br>
+        Admin → <span class="k">wulan</span> / <span class="k">123</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="appPage" class="page">
+  <header class="topbar">
+    <div class="topbar-brand">
+      <svg class="logo-trinity" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(0, 5)">
+          <path d="M 20 0 L 40 38 L 0 38 Z" fill="#ec008c"/>
+          <path d="M 20 38 L 40 38 L 30 22 Z" fill="#2a2d7a"/>
+          <path d="M 0 38 L 20 38 L 10 22 Z" fill="#7a2482"/>
+          <circle cx="20" cy="26" r="8" fill="#fff"/>
+        </g>
+        <text x="50" y="38" font-family="'Google Sans', sans-serif" font-weight="900" font-size="32" fill="#000" letter-spacing="-1">trinity</text>
+      </svg>
+      <div class="brand-text">
+        <span class="b1">Absensi Teknisi</span>
+        <span class="b2" id="roleLabel">/ teknisi</span>
+      </div>
+    </div>
+    <div class="user-chip">
+      <div class="user-info">
+        <div class="nm" id="userName">—</div>
+        <div class="rl" id="userRole">—</div>
+      </div>
+      <div class="avatar" id="avatarInitial">?</div>
+      <button id="logoutBtn" class="btn btn-danger">Logout</button>
+    </div>
+  </header>
+
+  <!-- ====== VIEW TEKNISI ====== -->
+  <main id="teknisiView" class="container hidden">
+    <div class="tabs">
+      <button class="tab active" data-ttab="form">📝 Form Absensi</button>
+      <button class="tab" data-ttab="pengajuan" id="tabPengajuanTeknisi">📨 Pengajuan Saya</button>
+      <button class="tab" data-ttab="kalender">📅 Kalender</button>
+      <button class="tab" data-ttab="riwayat">📋 Riwayat</button>
+    </div>
+
+    <!-- Form -->
+    <div id="ttabForm">
+      <div class="card">
+        <div class="card-head">
+          <div class="icon-badge">📅</div>
+          <h3>Form Absensi</h3>
+        </div>
+        <p class="desc">Masuk langsung tersimpan. Izin/Cuti/Sakit perlu <b>persetujuan admin</b>.</p>
+
+        <label>Klasifikasi Kehadiran</label>
+        <div class="klasifikasi-grid" id="klasifikasiGrid">
+          <label class="klas-item selected" data-type="masuk">
+            <input type="radio" name="klasifikasi" value="masuk" checked>
+            <span class="dot"></span><span>Masuk</span>
+          </label>
+          <label class="klas-item" data-type="izin">
+            <input type="radio" name="klasifikasi" value="izin">
+            <span class="dot"></span><span>Izin</span>
+          </label>
+          <label class="klas-item" data-type="cuti">
+            <input type="radio" name="klasifikasi" value="cuti">
+            <span class="dot"></span><span>Cuti</span>
+          </label>
+          <label class="klas-item" data-type="sakit">
+            <input type="radio" name="klasifikasi" value="sakit">
+            <span class="dot"></span><span>Sakit</span>
+          </label>
+        </div>
+
+        <div id="approvalNotice" class="info-box hidden">
+          ℹ️ Pengajuan <b id="approvalTypeLabel">Izin</b> akan berstatus <b>Pending</b> sampai disetujui oleh admin (Wulan Purnamasari). Data baru muncul di kalender & laporan setelah disetujui.
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <label for="tanggal">Tanggal <span style="color:var(--text-3);font-weight:400">(kalender 2026)</span></label>
+            <input id="tanggal" type="date" min="2026-01-01" max="2026-12-31" required>
+            <button type="button" id="toggleMiniCal" class="btn btn-outline" style="width:100%;margin-top:6px;font-size:12.5px;padding:7px">
+              📅 Pilih dari Kalender 2026
+            </button>
+            <div id="miniCalWrap" class="hidden" style="margin-top:8px"></div>
+          </div>
+          <div class="col">
+            <label for="jam" id="jamLabel">Jam Masuk</label>
+            <input id="jam" type="time" required>
+          </div>
+        </div>
+
+        <label for="lokasi" id="lokasiLabel">Keterangan Lokasi</label>
+        <select id="lokasi">
+          <option value="">— Pilih Lokasi —</option>
+          <option value="DRC Tapos">DRC Tapos</option>
+          <option value="DC Sapta Pesona">DC Sapta Pesona</option>
+        </select>
+
+        <div id="gpsSection">
+          <label>Lokasi GPS</label>
+          <div class="gps-row">
+            <button id="gpsBtn" type="button" class="btn btn-tonal">📍 Ambil Lokasi GPS</button>
+            <span id="gpsStatus" class="gps-status">Belum diambil</span>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label for="lat">Latitude</label>
+              <input id="lat" type="number" step="any" placeholder="-6.200000">
+            </div>
+            <div class="col">
+              <label for="lng">Longitude</label>
+              <input id="lng" type="number" step="any" placeholder="106.816666">
+            </div>
+          </div>
+        </div>
+
+        <label for="foto" id="fotoLabel">Foto (wajib untuk Masuk)</label>
+        <input id="foto" type="file" accept="image/*" capture="environment">
+        <div id="fotoBox" class="foto-box hidden">
+          <img id="fotoPreview" alt="Preview foto">
+          <button type="button" id="hapusFoto" title="Hapus foto">×</button>
+        </div>
+
+        <label for="catatan" id="catatanLabel">Catatan (opsional)</label>
+        <textarea id="catatan" rows="2" placeholder="Keterangan tambahan..."></textarea>
+
+        <button id="submitAbsen" class="btn btn-primary">✅ Simpan Absensi</button>
+        <p id="absenMsg" class="msg"></p>
+      </div>
+    </div>
+
+    <!-- Pengajuan Saya -->
+    <div id="ttabPengajuan" class="hidden">
+      <div class="card">
+        <div class="card-head">
+          <div class="icon-badge">📨</div>
+          <h3>Pengajuan Saya</h3>
+        </div>
+        <p class="desc">Status pengajuan Izin/Cuti/Sakit Anda. Data yang disetujui masuk kalender & riwayat.</p>
+        <div id="pengajuanList" class="list">
+          <p class="empty">Belum ada pengajuan.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kalender (teknisi) -->
+    <div id="ttabKalender" class="hidden">
+      <div class="card">
+        <div class="card-head">
+          <div class="icon-badge">📅</div>
+          <h3>Kalender Kehadiran Saya — 2026</h3>
+        </div>
+        <p class="desc">Hanya data yang sudah disetujui yang ditampilkan. Klik tanggal untuk detail.</p>
+        <div id="calTeknisi"></div>
+      </div>
+    </div>
+
+    <!-- Riwayat -->
+    <div id="ttabRiwayat" class="hidden">
+      <div class="card">
+        <div class="card-head">
+          <div class="icon-badge">📋</div>
+          <h3>Riwayat Absensi Saya</h3>
+        </div>
+        <p class="desc">Data yang sudah disetujui / langsung masuk. Klik foto untuk memperbesar.</p>
+        <div id="riwayatList" class="list">
+          <p class="empty">Belum ada data.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="foot-note">build with HTML5 · CSS3 · Vanilla JS</p>
+  </main>
+
+  <!-- ====== VIEW ADMIN ====== -->
+  <main id="adminView" class="container hidden">
+    <div class="tabs">
+      <button class="tab active" data-tab="monitor">📊 Monitor</button>
+      <button class="tab" data-tab="approval" id="tabApprovalAdmin">✅ Persetujuan</button>
+      <button class="tab" data-tab="kalender">📅 Kalender</button>
+      <button class="tab" data-tab="laporan">📄 Laporan Bulanan</button>
+    </div>
+
+    <div id="tabMonitor">
+      <div class="card">
+        <div class="card-head">
+          <div class="icon-badge">👥</div>
+          <h3>Monitor Absensi Teknisi (Disetujui)</h3>
+        </div>
+        <p class="desc">Data yang sudah disetujui. Gunakan ✏️ edit, 🗑️ hapus.</p>
+
+        <div class="filter-row">
+          <input id="adminSearch" type="text" placeholder="🔍 Cari nama teknisi...">
+          <select id="adminFilterType">
+            <option value="">Semua Jenis</option>
+            <option value="masuk">Masuk</option>
+            <option value="izin">Izin</option>
+            <option value="cuti">Cuti</option>
+            <option value="sakit">Sakit</option>
+          </select>
+          <input id="adminFilterDate" type="date" min="2026-01-01" max="2026-12-31">
+          <button id="adminReset" class="btn btn-outline" type="button">Reset</button>
+        </div>
+
+        <div id="adminStats" class="stats"></div>
+
+        <div id="adminList" class="list">
+          <p class="empty">Belum ada data.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tabApproval" class="hidden">
+      <div class="card">
+        <div class="card-head">
+          <div class="icon-badge" style="background:var(--g-orange-light);color:var(--g-orange)">✅</div>
+          <h3>Persetujuan & Kelola Pengajuan</h3>
+        </div>
+        <p class="desc">Setujui, tolak, edit, atau hapus pengajuan teknisi.</p>
+
+        <div class="filter-row">
+          <select id="approvalFilterStatus">
+            <option value="pending">⏳ Menunggu (Pending)</option>
+            <option value="">Semua Status</option>
+            <option value="approved">✅ Disetujui</option>
+            <option value="rejected">❌ Ditolak</option>
+          </select>
+          <input id="approvalSearch" type="text" placeholder="🔍 Cari nama teknisi...">
+        </div>
+
+        <div id="approvalList" class="list">
+          <p class="empty">Tidak ada pengajuan.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tabKalender" class="hidden">
+      <div class="card">
+        <div class="card-head">
+          <div class="icon-badge">📅</div>
+          <h3>Kalender Semua Teknisi — 2026</h3>
+        </div>
+        <p class="desc">Hanya data yang sudah disetujui. Klik tanggal untuk detail.</p>
+        <div id="calAdmin"></div>
+      </div>
+    </div>
+
+    <div id="tabLaporan" class="hidden">
+      <div class="card">
+        <div class="card-head">
+          <div class="icon-badge">📄</div>
+          <h3>Laporan Bulanan Rekap Kehadiran</h3>
+        </div>
+        <p class="desc">Hanya data yang disetujui. Pilih bulan & tahun, lalu lihat rekap.</p>
+
+        <div class="report-controls">
+          <select id="repMonth" style="flex:1;min-width:140px">
+            <option value="1">Januari</option><option value="2">Februari</option>
+            <option value="3">Maret</option><option value="4">April</option>
+            <option value="5">Mei</option><option value="6">Juni</option>
+            <option value="7">Juli</option><option value="8">Agustus</option>
+            <option value="9">September</option><option value="10">Oktober</option>
+            <option value="11">November</option><option value="12">Desember</option>
+          </select>
+          <select id="repYear" style="flex:1;min-width:100px"></select>
+          <button id="repLoad" class="btn btn-primary" style="width:auto;padding:10px 20px">Tampilkan</button>
+        </div>
+
+        <div id="reportOutput">
+          <p class="empty">Pilih bulan & tahun, lalu klik Tampilkan.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="foot-note">build with HTML5 · CSS3 · Vanilla JS</p>
+  </main>
+</div>
+
+<!-- ================= MODAL FOTO ================= -->
+<div id="photoModal" class="modal">
+  <span class="close" id="closeModal">×</span>
+  <img id="modalImg" class="modal-content" alt="Foto">
+</div>
+
+<!-- ================= MODAL EDIT ================= -->
+<div id="editModal" class="modal">
+  <div class="edit-dialog">
+    <div class="edit-header">
+      <div>
+        <h3>✏️ Edit Absensi</h3>
+        <div class="subh" id="editSubh">Ubah data absensi teknisi</div>
+      </div>
+      <button class="x-btn" id="editClose">×</button>
+    </div>
+
+    <div class="edit-body">
+      <label for="editTanggal">Tanggal <span style="color:var(--text-3);font-weight:400">(2026)</span></label>
+      <input id="editTanggal" type="date" min="2026-01-01" max="2026-12-31">
+
+      <label for="editJam">Jam</label>
+      <input id="editJam" type="time">
+
+      <label>Klasifikasi</label>
+      <select id="editTipe">
+        <option value="masuk">Masuk</option>
+        <option value="izin">Izin</option>
+        <option value="cuti">Cuti</option>
+        <option value="sakit">Sakit</option>
+      </select>
+
+      <label>Status Persetujuan</label>
+      <select id="editStatus">
+        <option value="approved">✅ Disetujui</option>
+        <option value="pending">⏳ Menunggu (Pending)</option>
+        <option value="rejected">❌ Ditolak</option>
+      </select>
+
+      <label for="editLokasi">Keterangan Lokasi</label>
+      <select id="editLokasi">
+        <option value="">— Kosong —</option>
+        <option value="DRC Tapos">DRC Tapos</option>
+        <option value="DC Sapta Pesona">DC Sapta Pesona</option>
+      </select>
+
+      <div class="row">
+        <div class="col">
+          <label for="editLat">Latitude</label>
+          <input id="editLat" type="number" step="any" placeholder="opsional">
+        </div>
+        <div class="col">
+          <label for="editLng">Longitude</label>
+          <input id="editLng" type="number" step="any" placeholder="opsional">
+        </div>
+      </div>
+
+      <label for="editCatatan">Catatan / Alasan</label>
+      <textarea id="editCatatan" rows="2" placeholder="Keterangan tambahan..."></textarea>
+
+      <label for="editRejectReason">Alasan Penolakan (jika ditolak)</label>
+      <textarea id="editRejectReason" rows="2" placeholder="Alasan penolakan..."></textarea>
+
+      <label>Foto</label>
+      <input id="editFoto" type="file" accept="image/*">
+      <div id="editFotoBox" class="foto-box hidden">
+        <img id="editFotoPreview" alt="Preview foto">
+        <button type="button" id="editHapusFoto" title="Hapus foto">×</button>
+      </div>
+
+      <p id="editMsg" class="msg"></p>
+    </div>
+
+    <div class="edit-footer">
+      <button id="editHapus" class="btn btn-danger-solid">🗑️ Hapus</button>
+      <button id="editCancel" class="btn btn-outline">Batal</button>
+      <button id="editSave" class="btn btn-primary">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   APLIKASI ABSENSI TEKNISI — Trinity Theme (SECURED)
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   FUNGSI HASHING (SHA-256)
+   ------------------------------------------------------------ */
+async function sha256(text) {
+  const msgBuffer = new TextEncoder().encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+/* ------------------------------------------------------------
+   DAFTAR USER & HASH PASSWORD
+   ------------------------------------------------------------ */
+const USERS = [
+  { id: 1, username: 'adam',    passHash: 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', name: 'Adam Andi Eryan',      role: 'teknisi', teknisi_id: 1 },
+  { id: 2, username: 'husaini', passHash: 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', name: 'Husaini Ali Ridwan',   role: 'teknisi', teknisi_id: 2 },
+  { id: 3, username: 'angga',   passHash: 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', name: 'Angga Budi Utomo',     role: 'teknisi', teknisi_id: 3 },
+  { id: 4, username: 'wulan',   passHash: 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3', name: 'Wulan Purnamasari',    role: 'admin' }
+];
+
+const TIPE_ABSEN = { masuk: { label: 'Masuk' }, izin: { label: 'Izin' }, cuti: { label: 'Cuti' }, sakit: { label: 'Sakit' } };
+const NAMA_BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const NAMA_HARI  = ['Sen','Sel','Rab','Kam','Jum','Sab','Min'];
+const MINI_CAL_YEAR = 2026;
+
+const HOLIDAYS_2026 = {
+  '2026-01-01': 'Tahun Baru',
+  '2026-01-16': 'Isra Mikraj',
+  '2026-02-17': 'Tahun Baru Imlek',
+  '2026-03-19': 'Nyepi',
+  '2026-03-20': 'Awal Ramadan',
+  '2026-03-21': 'Idul Fitri',
+  '2026-03-22': 'Idul Fitri',
+  '2026-04-03': 'Wafat Isa Almasih',
+  '2026-04-05': 'Paskah',
+  '2026-05-01': 'Hari Buruh',
+  '2026-05-14': 'Kenaikan Isa',
+  '2026-05-27': 'Idul Adha',
+  '2026-05-31': 'Waisak',
+  '2026-06-01': 'Hari Lahir Pancasila',
+  '2026-06-16': 'Tahun Baru Islam',
+  '2026-08-17': 'Kemerdekaan RI',
+  '2026-08-25': 'Maulid Nabi',
+  '2026-12-25': 'Natal',
+  '2026-12-26': 'Cuti Bersama Natal'
+};
+
+/* ---------- STORAGE ---------- */
+const DB_KEY = 'absensi_db_v4';
+function loadDB() {
+  try { return JSON.parse(localStorage.getItem(DB_KEY)) || { absensi: [] }; }
+  catch { return { absensi: [] }; }
+}
+function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+function addAbsensi(rec) { const db = loadDB(); db.absensi.push(rec); saveDB(db); }
+function updateAbsensi(id, patch) {
+  const db = loadDB();
+  const idx = db.absensi.findIndex(a => a.id === id);
+  if (idx === -1) return false;
+  db.absensi[idx] = { ...db.absensi[idx], ...patch };
+  saveDB(db);
+  return true;
+}
+function deleteAbsensiById(id) {
+  const db = loadDB();
+  const before = db.absensi.length;
+  db.absensi = db.absensi.filter(a => a.id !== id);
+  saveDB(db);
+  return before !== db.absensi.length;
+}
+function getAbsensiById(id) { return loadDB().absensi.find(a => a.id === id); }
+function getAbsensiByUser(userId) {
+  return loadDB().absensi.filter(a => a.userId === userId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+function getAllAbsensi() {
+  return loadDB().absensi.slice().sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+function getApprovedAbsensi() {
+  return getAllAbsensi().filter(a => a.status === 'approved' || (a.tipe === 'masuk' && a.status !== 'rejected'));
+}
+function getApprovedByUser(userId) {
+  return getAbsensiByUser(userId).filter(a => a.status === 'approved' || (a.tipe === 'masuk' && a.status !== 'rejected'));
+}
+function getPendingAbsensi() {
+  return getAllAbsensi().filter(a => a.status === 'pending');
+}
+function getPendingByUser(userId) {
+  return getAbsensiByUser(userId).filter(a => a.status === 'pending');
+}
+
+/* ---------- STATE ---------- */
+let currentUser = null;
+let currentFotoData = '';
+let currentTipe = 'masuk';
+let editingId = null;
+let editFotoData = null;
+let editFotoRemoved = false;
+
+const CAL_STATE = {
+  teknisi: { year: 2026, month: 0, selectedDate: null },
+  admin:   { year: 2026, month: 0, selectedDate: null, filterUser: 'all' }
+};
+
+let miniCalMonth = (new Date().getFullYear() === MINI_CAL_YEAR) ? new Date().getMonth() : 0;
+
+/* ---------- UTILS ---------- */
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2, '0');
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function setDefaultDateTime() {
+  const now = new Date();
+  if (now.getFullYear() === MINI_CAL_YEAR) {
+    $('tanggal').value = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+  } else {
+    $('tanggal').value = `${MINI_CAL_YEAR}-01-01`;
+  }
+  $('jam').value = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+}
+function initials(name) { return name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase(); }
+function lokasiPillClass(lokasi) {
+  if (lokasi === 'DRC Tapos') return 'loc-drc';
+  if (lokasi === 'DC Sapta Pesona') return 'loc-sapta';
+  return '';
+}
+function tipePillClass(tipe) { return 'type-' + (TIPE_ABSEN[tipe] ? tipe : 'masuk'); }
+function tipeLabel(tipe) { return TIPE_ABSEN[tipe] ? TIPE_ABSEN[tipe].label : tipe; }
+function namaBulan(n) { return NAMA_BULAN[n-1]; }
+function ymd(y, m, d) { return `${y}-${pad(m+1)}-${pad(d)}`; }
+
+function statusLabel(status) {
+  if (status === 'pending')  return '⏳ Pending';
+  if (status === 'rejected') return '❌ Ditolak';
+  return '✅ Disetujui';
+}
+function statusPillClass(status) {
+  if (status === 'pending')  return 'status-pending';
+  if (status === 'rejected') return 'status-rejected';
+  return 'status-approved';
+}
+
+/* ============================================================
+   LOGIN / LOGOUT
+   ============================================================ */
+$('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = $('loginUser').value.trim().toLowerCase();
+  const password = $('loginPass').value;
+  const errEl = $('loginError');
+  const btn = $('btnLogin');
+
+  errEl.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Memeriksa...';
+
+  try {
+    const user = USERS.find(u => u.username === username);
+    if (!user) {
+      errEl.textContent = '❌ Username atau password salah.';
+      return;
+    }
+    const inputHash = await sha256(password);
+    if (inputHash !== user.passHash) {
+      errEl.textContent = '❌ Username atau password salah.';
+      return;
+    }
+    currentUser = {
+      id: user.id, username: user.username, name: user.name,
+      role: user.role, teknisi_id: user.teknisi_id
+    };
+    sessionStorage.setItem('absensi_user', JSON.stringify(currentUser));
+    showApp();
+  } catch (error) {
+    errEl.textContent = 'Terjadi kesalahan sistem. Silakan coba lagi.';
+    console.error(error);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Masuk →';
+  }
+});
+
+$('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem('absensi_user');
+  currentUser = null; currentFotoData = '';
+  $('loginForm').reset();
+  $('loginError').textContent = '';
+  $('appPage').classList.remove('active');
+  $('loginPage').classList.add('active');
+});
+
+(function restore() {
+  const raw = sessionStorage.getItem('absensi_user');
+  if (raw) { try { currentUser = JSON.parse(raw); showApp(); } catch {} }
+})();
+
+/* ============================================================
+   SHOW APP
+   ============================================================ */
+function showApp() {
+  $('loginPage').classList.remove('active');
+  $('appPage').classList.add('active');
+
+  $('userName').textContent = currentUser.name;
+  $('userRole').textContent = currentUser.role === 'admin' ? 'Administrator' : 'Teknisi';
+  $('avatarInitial').textContent = initials(currentUser.name);
+  $('roleLabel').textContent = '/' + (currentUser.role === 'admin' ? 'admin' : 'teknisi');
+
+  if (currentUser.role === 'admin') {
+    $('teknisiView').classList.add('hidden');
+    $('adminView').classList.remove('hidden');
+    initAdmin();
+  } else {
+    $('adminView').classList.add('hidden');
+    $('teknisiView').classList.remove('hidden');
+    setDefaultDateTime();
+    loadRiwayat();
+    loadPengajuanTeknisi();
+    updateBadges();
+    renderCalendar('teknisi');
+  }
+  updateBadges();
+}
+
+function updateBadges() {
+  if (currentUser && currentUser.role === 'teknisi') {
+    const pending = getPendingByUser(currentUser.id).length;
+    const tab = $('tabPengajuanTeknisi');
+    const base = '📨 Pengajuan Saya';
+    tab.innerHTML = base + (pending > 0 ? ` <span class="badge-count">${pending}</span>` : '');
+  }
+  if (currentUser && currentUser.role === 'admin') {
+    const pending = getPendingAbsensi().length;
+    const tab = $('tabApprovalAdmin');
+    const base = '✅ Persetujuan';
+    tab.innerHTML = base + (pending > 0 ? ` <span class="badge-count">${pending}</span>` : '');
+  }
+}
+
+/* ============================================================
+   TABS — TEKNISI
+   ============================================================ */
+document.querySelectorAll('[data-ttab]').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('[data-ttab]').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const t = tab.dataset.ttab;
+    $('ttabForm').classList.toggle('hidden', t !== 'form');
+    $('ttabPengajuan').classList.toggle('hidden', t !== 'pengajuan');
+    $('ttabKalender').classList.toggle('hidden', t !== 'kalender');
+    $('ttabRiwayat').classList.toggle('hidden', t !== 'riwayat');
+    if (t === 'kalender') renderCalendar('teknisi');
+    if (t === 'riwayat') loadRiwayat();
+    if (t === 'pengajuan') loadPengajuanTeknisi();
+  });
+});
+
+/* ============================================================
+   TABS — ADMIN
+   ============================================================ */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    if (!tab.dataset.tab) return;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    const target = tab.dataset.tab;
+    $('tabMonitor').classList.toggle('hidden', target !== 'monitor');
+    $('tabApproval').classList.toggle('hidden', target !== 'approval');
+    $('tabKalender').classList.toggle('hidden', target !== 'kalender');
+    $('tabLaporan').classList.toggle('hidden', target !== 'laporan');
+    if (target === 'laporan') initReportControls();
+    if (target === 'kalender') renderCalendar('admin');
+    if (target === 'approval') loadApprovalList();
+  });
+});
+
+/* ============================================================
+   KLASIFIKASI TOGGLE
+   ============================================================ */
+$('klasifikasiGrid').addEventListener('click', (e) => {
+  const item = e.target.closest('.klas-item');
+  if (!item) return;
+  document.querySelectorAll('#klasifikasiGrid .klas-item').forEach(el => el.classList.remove('selected'));
+  item.classList.add('selected');
+  item.querySelector('input').checked = true;
+  currentTipe = item.dataset.type;
+  updateFormForType();
+});
+
+function updateFormForType() {
+  const isMasuk = currentTipe === 'masuk';
+  $('jamLabel').textContent = isMasuk ? 'Jam Masuk' : 'Jam (opsional)';
+  $('jam').required = isMasuk;
+  $('lokasiLabel').textContent = isMasuk ? 'Keterangan Lokasi *' : 'Keterangan Lokasi (opsional)';
+  $('fotoLabel').textContent = isMasuk ? 'Foto (wajib untuk Masuk)' : 'Foto / Surat Pendukung (opsional)';
+  $('catatanLabel').textContent = isMasuk ? 'Catatan (opsional)' : 'Alasan / Keterangan *';
+  $('gpsSection').style.display = isMasuk ? '' : 'none';
+
+  const notice = $('approvalNotice');
+  if (isMasuk) {
+    notice.classList.add('hidden');
+  } else {
+    notice.classList.remove('hidden');
+    $('approvalTypeLabel').textContent = tipeLabel(currentTipe);
+  }
+}
+
+/* ============================================================
+   GPS
+   ============================================================ */
+$('gpsBtn').addEventListener('click', () => {
+  const status = $('gpsStatus');
+  status.className = 'gps-status';
+  status.textContent = '⏳ Mengambil lokasi GPS...';
+  if (!navigator.geolocation) {
+    status.className = 'gps-status err';
+    status.textContent = '❌ GPS tidak didukung browser. Isi manual.';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude.toFixed(6);
+      const lng = pos.coords.longitude.toFixed(6);
+      $('lat').value = lat; $('lng').value = lng;
+      status.className = 'gps-status ok';
+      status.textContent = `✅ ${lat}, ${lng}`;
+    },
+    (err) => {
+      let msg = '❌ Gagal: ';
+      if (err.code === 1) msg += 'Izin ditolak. Isi manual.';
+      else if (err.code === 2) msg += 'Lokasi tak tersedia.';
+      else if (err.code === 3) msg += 'Waktu habis.';
+      else msg += err.message;
+      status.className = 'gps-status err';
+      status.textContent = msg;
+    },
+    { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+  );
+});
+
+/* ============================================================
+   FOTO
+   ============================================================ */
+$('foto').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  compressImage(file, (data) => {
+    currentFotoData = data;
+    $('fotoPreview').src = data;
+    $('fotoBox').classList.remove('hidden');
+  });
+});
+$('hapusFoto').addEventListener('click', () => {
+  currentFotoData = '';
+  $('foto').value = '';
+  $('fotoPreview').removeAttribute('src');
+  $('fotoBox').classList.add('hidden');
+});
+
+function compressImage(file, cb) {
+  if (!file.type.startsWith('image/')) { alert('File harus berupa gambar.'); return; }
+  if (file.size > 5 * 1024 * 1024) { alert('Ukuran foto maksimal 5 MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => {
+      const maxSide = 640;
+      const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width  = Math.round(img.width  * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      cb(canvas.toDataURL('image/jpeg', 0.72));
+    };
+    img.onerror = () => alert('Gagal memuat gambar.');
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ============================================================
+   SUBMIT ABSENSI / PENGAJUAN
+   ============================================================ */
+$('submitAbsen').addEventListener('click', () => {
+  const msg = $('absenMsg');
+  msg.className = 'msg'; msg.textContent = '';
+
+  const tipe = currentTipe;
+  const tanggal = $('tanggal').value;
+  const jam = $('jam').value;
+  const lokasi = $('lokasi').value;
+  const lat = $('lat').value.trim();
+  const lng = $('lng').value.trim();
+  const catatan = $('catatan').value.trim();
+
+  if (!tanggal) { msg.className = 'msg err'; msg.textContent = 'Tanggal wajib diisi.'; return; }
+  if (!tanggal.startsWith('2026-')) {
+    msg.className = 'msg err';
+    msg.textContent = 'Tanggal harus berada di tahun 2026 (kalender Masehi).';
+    return;
+  }
+  if (tipe === 'masuk') {
+    if (!jam) { msg.className = 'msg err'; msg.textContent = 'Jam masuk wajib diisi.'; return; }
+    if (!lokasi) { msg.className = 'msg err'; msg.textContent = 'Pilih keterangan lokasi.'; return; }
+    if (!lat || !lng) { msg.className = 'msg err'; msg.textContent = 'Koordinat GPS wajib diisi.'; return; }
+    if (isNaN(parseFloat(lat)) || isNaN(parseFloat(lng))) {
+      msg.className = 'msg err'; msg.textContent = 'Koordinat harus berupa angka.'; return;
+    }
+    if (!currentFotoData) { msg.className = 'msg err'; msg.textContent = 'Foto kehadiran wajib diupload untuk Masuk.'; return; }
+  }
+  if (tipe !== 'masuk' && !catatan) {
+    msg.className = 'msg err'; msg.textContent = 'Alasan/keterangan wajib diisi untuk ' + tipeLabel(tipe) + '.'; return;
+  }
+
+  const latNum = lat ? parseFloat(lat) : null;
+  const lngNum = lng ? parseFloat(lng) : null;
+  if (lat && isNaN(latNum)) { msg.className = 'msg err'; msg.textContent = 'Latitude tidak valid.'; return; }
+  if (lng && isNaN(lngNum)) { msg.className = 'msg err'; msg.textContent = 'Longitude tidak valid.'; return; }
+
+  const status = (tipe === 'masuk') ? 'approved' : 'pending';
+
+  addAbsensi({
+    id: Date.now() + Math.random(),
+    userId: currentUser.id, nama: currentUser.name, teknisi_id: currentUser.teknisi_id,
+    tipe, tanggal, jam,
+    lokasi: lokasi || '',
+    lat: latNum, lng: lngNum,
+    foto: currentFotoData || '',
+    catatan,
+    status,
+    approvedBy: (status === 'approved') ? 'Sistem (auto-Masuk)' : null,
+    approvedAt: (status === 'approved') ? new Date().toISOString() : null,
+    rejectReason: '',
+    createdAt: new Date().toISOString()
+  });
+
+  msg.className = 'msg ok';
+  if (tipe === 'masuk') {
+    msg.textContent = '✅ Absensi Masuk berhasil disimpan!';
+  } else {
+    msg.textContent = `📨 Pengajuan ${tipeLabel(tipe)} berhasil dikirim. Menunggu persetujuan admin.`;
+  }
+
+  currentFotoData = '';
+  $('foto').value = '';
+  $('fotoPreview').removeAttribute('src');
+  $('fotoBox').classList.add('hidden');
+  $('catatan').value = '';
+  $('lokasi').value = '';
+  $('lat').value = '';
+  $('lng').value = '';
+  $('gpsStatus').textContent = 'Belum diambil';
+  $('gpsStatus').className = 'gps-status';
+  setDefaultDateTime();
+
+  document.querySelectorAll('#klasifikasiGrid .klas-item').forEach(el => el.classList.remove('selected'));
+  document.querySelector('#klasifikasiGrid .klas-item[data-type="masuk"]').classList.add('selected');
+  document.querySelector('#klasifikasiGrid .klas-item[data-type="masuk"] input').checked = true;
+  currentTipe = 'masuk';
+  updateFormForType();
+
+  loadRiwayat();
+  loadPengajuanTeknisi();
+  updateBadges();
+  renderCalendar('teknisi');
+});
+
+/* ============================================================
+   RIWAYAT TEKNISI
+   ============================================================ */
+function loadRiwayat() {
+  const list = $('riwayatList');
+  const data = getApprovedByUser(currentUser.id);
+  if (data.length === 0) {
+    list.innerHTML = '<p class="empty">Belum ada data absensi yang disetujui.</p>';
+    return;
+  }
+  list.innerHTML = data.map(a => renderItem(a, { showName: false, editable: false, showStatus: false })).join('');
+  bindThumbClicks();
+}
+
+/* ============================================================
+   PENGAJUAN TEKNISI
+   ============================================================ */
+function loadPengajuanTeknisi() {
+  const list = $('pengajuanList');
+  const data = getAbsensiByUser(currentUser.id).filter(a => a.tipe !== 'masuk');
+  if (data.length === 0) {
+    list.innerHTML = '<p class="empty">Belum ada pengajuan izin/cuti/sakit.</p>';
+    return;
+  }
+  list.innerHTML = data.map(a => renderItem(a, { showName: false, editable: false, showStatus: true })).join('');
+  bindThumbClicks();
+}
+
+/* ============================================================
+   RENDER ITEM
+   ============================================================ */
+function renderItem(a, opts = {}) {
+  const { showName = false, editable = false, showStatus = false, showApprovalActions = false } = opts;
+  const fotoHtml = a.foto ? `<img class="thumb" src="${a.foto}" data-src="${a.foto}" alt="Foto">` : '';
+  const nameHtml = showName ? `<div class="name">${escapeHtml(a.nama)}</div>` : '';
+  const tipePill = `<span class="pill ${tipePillClass(a.tipe)}">${tipeLabel(a.tipe)}</span>`;
+  const locPill = a.lokasi ? `<span class="pill ${lokasiPillClass(a.lokasi)}">📍 ${escapeHtml(a.lokasi)}</span>` : '';
+  const statusPill = showStatus
+    ? `<span class="pill ${statusPillClass(a.status)}">${statusLabel(a.status)}</span>` : '';
+  const jamStr = a.jam ? ` • ${a.jam}` : '';
+  const mapHtml = (a.lat != null && a.lng != null)
+    ? `<div class="meta">🗺️ <a href="https://www.google.com/maps?q=${a.lat},${a.lng}" target="_blank" rel="noopener">${a.lat}, ${a.lng}</a></div>`
+    : '';
+  const catatanHtml = a.catatan ? `<div class="catatan">📝 ${escapeHtml(a.catatan)}</div>` : '';
+  const rejectHtml = (a.status === 'rejected' && a.rejectReason)
+    ? `<div class="reject-reason">❌ Alasan ditolak: ${escapeHtml(a.rejectReason)}</div>` : '';
+  const approvedByHtml = (a.status === 'approved' && a.approvedBy && a.approvedBy !== 'Sistem (auto-Masuk)')
+    ? `<div class="meta" style="font-size:11px;color:var(--text-3)">✔ Disetujui oleh ${escapeHtml(a.approvedBy)}</div>` : '';
+
+  let actionsHtml = '';
+  if (showApprovalActions && a.status === 'pending') {
+    actionsHtml = `
+      <div class="item-actions">
+        <button class="btn btn-approve" data-action="approve" data-id="${a.id}">✅ Setujui</button>
+        <button class="btn btn-reject" data-action="reject" data-id="${a.id}">❌ Tolak</button>
+      </div>`;
+  } else if (editable) {
+    actionsHtml = `
+      <div class="item-actions">
+        <button class="icon-btn" title="Edit" data-action="edit" data-id="${a.id}">✏️</button>
+        <button class="icon-btn del" title="Hapus" data-action="delete" data-id="${a.id}">🗑️</button>
+      </div>`;
+  }
+
+  return `
+    <div class="item">
+      ${fotoHtml}
+      <div class="info">
+        ${nameHtml}
+        <div class="title">${a.tanggal}${jamStr} ${tipePill} ${locPill} ${statusPill}</div>
+        ${mapHtml}
+        ${catatanHtml}
+        ${rejectHtml}
+        ${approvedByHtml}
+      </div>
+      ${actionsHtml}
+    </div>`;
+}
+
+/* ============================================================
+   ADMIN — MONITOR
+   ============================================================ */
+let adminCache = [];
+function initAdmin() {
+  adminCache = getApprovedAbsensi();
+  renderAdmin();
+  initReportControls();
+  loadApprovalList();
+  updateBadges();
+}
+
+function renderAdmin() {
+  const q = $('adminSearch').value.toLowerCase().trim();
+  const typeFilter = $('adminFilterType').value;
+  const dateFilter = $('adminFilterDate').value;
+
+  let filtered = adminCache;
+  if (q) filtered = filtered.filter(a => a.nama.toLowerCase().includes(q));
+  if (typeFilter) filtered = filtered.filter(a => a.tipe === typeFilter);
+  if (dateFilter) filtered = filtered.filter(a => a.tanggal === dateFilter);
+
+  const uniqueTeknisi = new Set(filtered.map(a => a.userId));
+  const count = t => filtered.filter(a => a.tipe === t).length;
+
+  $('adminStats').innerHTML = `
+    <div class="stat green"><div class="num">${count('masuk')}</div><div class="lbl">Masuk</div></div>
+    <div class="stat blue"><div class="num">${count('izin')}</div><div class="lbl">Izin</div></div>
+    <div class="stat purple"><div class="num">${count('cuti')}</div><div class="lbl">Cuti</div></div>
+    <div class="stat yellow"><div class="num">${count('sakit')}</div><div class="lbl">Sakit</div></div>
+    <div class="stat red"><div class="num">${uniqueTeknisi.size}</div><div class="lbl">Teknisi Aktif</div></div>
+  `;
+
+  const list = $('adminList');
+  if (filtered.length === 0) {
+    list.innerHTML = '<p class="empty">Tidak ada data yang cocok.</p>';
+    return;
+  }
+  list.innerHTML = filtered.map(a => renderItem(a, { showName: true, editable: true })).join('');
+  bindThumbClicks();
+  bindAdminActions();
+}
+
+$('adminSearch').addEventListener('input', renderAdmin);
+$('adminFilterType').addEventListener('change', renderAdmin);
+$('adminFilterDate').addEventListener('change', renderAdmin);
+$('adminReset').addEventListener('click', () => {
+  $('adminSearch').value = ''; $('adminFilterType').value = ''; $('adminFilterDate').value = '';
+  renderAdmin();
+});
+
+function bindAdminActions() {
+  document.querySelectorAll('[data-action]').forEach(btn => {
+    if (btn.dataset.bound === '1') return;
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = parseFloat(btn.dataset.id);
+      const act = btn.dataset.action;
+      if (act === 'edit') openEditModal(id);
+      else if (act === 'delete') confirmDelete(id);
+      else if (act === 'approve') approveRecord(id);
+      else if (act === 'reject') rejectRecord(id);
+    });
+  });
+}
+
+function confirmDelete(id) {
+  const rec = getAbsensiById(id);
+  if (!rec) return;
+  const label = `${rec.nama} • ${rec.tanggal} ${rec.jam || ''} • ${tipeLabel(rec.tipe)}`;
+  if (!confirm(`Hapus absensi berikut?\n\n${label}\n\nTindakan ini tidak dapat dibatalkan.`)) return;
+  if (deleteAbsensiById(id)) {
+    alert('🗑️ Data absensi berhasil dihapus.');
+    refreshAdminData();
+    loadApprovalList();
+    updateBadges();
+    if (!$('tabLaporan').classList.contains('hidden')) buildReport();
+    if (!$('tabKalender').classList.contains('hidden')) renderCalendar('admin');
+  } else {
+    alert('❌ Data tidak ditemukan.');
+  }
+}
+
+function refreshAdminData() { adminCache = getApprovedAbsensi(); renderAdmin(); }
+
+/* ============================================================
+   ADMIN — APPROVAL (DIPERBARUI: Tombol Edit & Hapus)
+   ============================================================ */
+function loadApprovalList() {
+  const list = $('approvalList');
+  const statusFilter = $('approvalFilterStatus').value;
+  const q = $('approvalSearch').value.toLowerCase().trim();
+
+  let data = getAllAbsensi().filter(a => a.tipe !== 'masuk');
+  if (statusFilter) data = data.filter(a => a.status === statusFilter);
+  if (q) data = data.filter(a => a.nama.toLowerCase().includes(q));
+
+  data.sort((a, b) => {
+    if (a.status === 'pending' && b.status !== 'pending') return -1;
+    if (a.status !== 'pending' && b.status === 'pending') return 1;
+    return b.createdAt.localeCompare(a.createdAt);
+  });
+
+  if (data.length === 0) {
+    list.innerHTML = '<p class="empty">Tidak ada pengajuan.</p>';
+    return;
+  }
+  // Tampilkan tombol Edit & Hapus (editable: true) untuk SEMUA status
+  list.innerHTML = data.map(a => renderItem(a, {
+    showName: true,
+    editable: true,
+    showStatus: true,
+    showApprovalActions: a.status === 'pending'
+  })).join('');
+  
+  bindThumbClicks();
+  bindAdminActions();
+}
+
+$('approvalFilterStatus').addEventListener('change', loadApprovalList);
+$('approvalSearch').addEventListener('input', loadApprovalList);
+
+function approveRecord(id) {
+  const rec = getAbsensiById(id);
+  if (!rec) return;
+  if (!confirm(`Setujui pengajuan ${tipeLabel(rec.tipe)} dari ${rec.nama} tanggal ${rec.tanggal}?`)) return;
+  if (updateAbsensi(id, {
+    status: 'approved',
+    approvedBy: currentUser.name,
+    approvedAt: new Date().toISOString(),
+    rejectReason: ''
+  })) {
+    alert('✅ Pengajuan disetujui.');
+    loadApprovalList();
+    refreshAdminData();
+    updateBadges();
+    if (!$('tabLaporan').classList.contains('hidden')) buildReport();
+    if (!$('tabKalender').classList.contains('hidden')) renderCalendar('admin');
+  }
+}
+
+function rejectRecord(id) {
+  const rec = getAbsensiById(id);
+  if (!rec) return;
+  const reason = prompt(`Tolak pengajuan ${tipeLabel(rec.tipe)} dari ${rec.nama} tanggal ${rec.tanggal}?\n\nMasukkan alasan penolakan:`, '');
+  if (reason === null) return;
+  if (!reason.trim()) { alert('Alasan penolakan wajib diisi.'); return; }
+  if (updateAbsensi(id, {
+    status: 'rejected',
+    approvedBy: currentUser.name,
+    approvedAt: new Date().toISOString(),
+    rejectReason: reason.trim()
+  })) {
+    alert('❌ Pengajuan ditolak.');
+    loadApprovalList();
+    refreshAdminData();
+    updateBadges();
+    if (!$('tabLaporan').classList.contains('hidden')) buildReport();
+    if (!$('tabKalender').classList.contains('hidden')) renderCalendar('admin');
+  }
+}
+
+/* ============================================================
+   ADMIN — EDIT
+   ============================================================ */
+function openEditModal(id) {
+  const rec = getAbsensiById(id);
+  if (!rec) { alert('Data tidak ditemukan.'); return; }
+  editingId = id;
+  editFotoData = null; editFotoRemoved = false;
+
+  $('editSubh').textContent = `${rec.nama} • dibuat ${new Date(rec.createdAt).toLocaleString('id-ID')}`;
+  $('editTanggal').value = rec.tanggal || '';
+  $('editJam').value = rec.jam || '';
+  $('editTipe').value = rec.tipe || 'masuk';
+  $('editStatus').value = rec.status || 'approved';
+  $('editLokasi').value = rec.lokasi || '';
+  $('editLat').value = (rec.lat != null) ? rec.lat : '';
+  $('editLng').value = (rec.lng != null) ? rec.lng : '';
+  $('editCatatan').value = rec.catatan || '';
+  $('editRejectReason').value = rec.rejectReason || '';
+  $('editFoto').value = '';
+  $('editMsg').textContent = ''; $('editMsg').className = 'msg';
+
+  if (rec.foto) {
+    $('editFotoPreview').src = rec.foto;
+    $('editFotoBox').classList.remove('hidden');
+  } else {
+    $('editFotoPreview').removeAttribute('src');
+    $('editFotoBox').classList.add('hidden');
+  }
+  $('editModal').classList.add('show');
+}
+
+function closeEditModal() {
+  $('editModal').classList.remove('show');
+  editingId = null; editFotoData = null; editFotoRemoved = false;
+}
+
+$('editClose').addEventListener('click', closeEditModal);
+$('editCancel').addEventListener('click', closeEditModal);
+$('editModal').addEventListener('click', (e) => { if (e.target.id === 'editModal') closeEditModal(); });
+
+$('editFoto').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  compressImage(file, (data) => {
+    editFotoData = data; editFotoRemoved = false;
+    $('editFotoPreview').src = data;
+    $('editFotoBox').classList.remove('hidden');
+  });
+});
+
+$('editHapusFoto').addEventListener('click', () => {
+  editFotoData = ''; editFotoRemoved = true;
+  $('editFoto').value = '';
+  $('editFotoPreview').removeAttribute('src');
+  $('editFotoBox').classList.add('hidden');
+});
+
+$('editSave').addEventListener('click', () => {
+  if (editingId == null) return;
+  const msg = $('editMsg'); msg.className = 'msg'; msg.textContent = '';
+
+  const rec = getAbsensiById(editingId);
+  if (!rec) { msg.className = 'msg err'; msg.textContent = 'Data tidak ditemukan.'; return; }
+
+  const tanggal = $('editTanggal').value;
+  const jam = $('editJam').value;
+  const tipe = $('editTipe').value;
+  const status = $('editStatus').value;
+  const lokasi = $('editLokasi').value;
+  const lat = $('editLat').value.trim();
+  const lng = $('editLng').value.trim();
+  const catatan = $('editCatatan').value.trim();
+  const rejectReason = $('editRejectReason').value.trim();
+
+  if (!tanggal) { msg.className = 'msg err'; msg.textContent = 'Tanggal wajib diisi.'; return; }
+  if (!tanggal.startsWith('2026-')) {
+    msg.className = 'msg err'; msg.textContent = 'Tanggal harus di tahun 2026.'; return;
+  }
+  if (tipe === 'masuk') {
+    if (!jam) { msg.className = 'msg err'; msg.textContent = 'Jam wajib untuk Masuk.'; return; }
+    if (!lokasi) { msg.className = 'msg err'; msg.textContent = 'Lokasi wajib untuk Masuk.'; return; }
+    const effectiveFoto = editFotoData === null ? rec.foto : editFotoData;
+    if (!effectiveFoto) { msg.className = 'msg err'; msg.textContent = 'Foto wajib untuk Masuk.'; return; }
+    if (!lat || !lng) { msg.className = 'msg err'; msg.textContent = 'Koordinat wajib untuk Masuk.'; return; }
+  }
+  const latNum = lat ? parseFloat(lat) : null;
+  const lngNum = lng ? parseFloat(lng) : null;
+  if (lat && isNaN(latNum)) { msg.className = 'msg err'; msg.textContent = 'Latitude tidak valid.'; return; }
+  if (lng && isNaN(lngNum)) { msg.className = 'msg err'; msg.textContent = 'Longitude tidak valid.'; return; }
+
+  let fotoFinal;
+  if (editFotoData === null) fotoFinal = rec.foto || '';
+  else fotoFinal = editFotoData;
+
+  const patch = {
+    tanggal, jam, tipe, status,
+    lokasi: lokasi || '', lat: latNum, lng: lngNum, catatan,
+    foto: fotoFinal,
+    rejectReason: status === 'rejected' ? rejectReason : '',
+    approvedBy: (status === 'approved' && !rec.approvedBy) ? currentUser.name : rec.approvedBy,
+    approvedAt: (status === 'approved' && !rec.approvedAt) ? new Date().toISOString() : rec.approvedAt,
+    editedAt: new Date().toISOString(),
+    editedBy: currentUser.name
+  };
+
+  if (updateAbsensi(editingId, patch)) {
+    msg.className = 'msg ok'; msg.textContent = '✅ Perubahan tersimpan!';
+    setTimeout(() => {
+      closeEditModal();
+      refreshAdminData();
+      loadApprovalList();
+      updateBadges();
+      if (!$('tabLaporan').classList.contains('hidden')) buildReport();
+      if (!$('tabKalender').classList.contains('hidden')) renderCalendar('admin');
+    }, 400);
+  } else {
+    msg.className = 'msg err'; msg.textContent = '❌ Gagal menyimpan.';
+  }
+});
+
+$('editHapus').addEventListener('click', () => {
+  if (editingId == null) return;
+  const id = editingId;
+  const rec = getAbsensiById(id);
+  if (!rec) return;
+  const label = `${rec.nama} • ${rec.tanggal} ${rec.jam || ''} • ${tipeLabel(rec.tipe)}`;
+  if (!confirm(`Hapus absensi berikut?\n\n${label}\n\nTindakan ini tidak dapat dibatalkan.`)) return;
+  if (deleteAbsensiById(id)) {
+    alert('🗑️ Data absensi berhasil dihapus.');
+    closeEditModal();
+    refreshAdminData();
+    loadApprovalList();
+    updateBadges();
+    if (!$('tabLaporan').classList.contains('hidden')) buildReport();
+    if (!$('tabKalender').classList.contains('hidden')) renderCalendar('admin');
+  }
+});
+
+/* ============================================================
+   KALENDER
+   ============================================================ */
+function renderCalendar(mode) {
+  const state = CAL_STATE[mode];
+  const container = $(mode === 'admin' ? 'calAdmin' : 'calTeknisi');
+  if (!container) return;
+
+  const { year, month } = state;
+  const all = getApprovedAbsensi();
+  const dataScoped = mode === 'admin'
+    ? (state.filterUser === 'all' ? all : all.filter(a => a.userId === state.filterUser))
+    : all.filter(a => a.userId === currentUser.id);
+
+  const byDate = {};
+  dataScoped.forEach(a => {
+    if (!a.tanggal) return;
+    (byDate[a.tanggal] = byDate[a.tanggal] || []).push(a);
+  });
+
+  const firstDay = new Date(year, month, 1);
+  const firstWeekday = (firstDay.getDay() + 6) % 7;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevDays = new Date(year, month, 0).getDate();
+
+  const today = new Date();
+  const isToday = (y, m, d) => y === today.getFullYear() && m === today.getMonth() && d === today.getDate();
+
+  const cells = [];
+  for (let i = firstWeekday - 1; i >= 0; i--) {
+    const d = prevDays - i;
+    const pm = month === 0 ? 11 : month - 1;
+    const py = month === 0 ? year - 1 : year;
+    cells.push({ day: d, month: pm, year: py, otherMonth: true });
+  }
+  for (let d = 1; d <= daysInMonth; d++) cells.push({ day: d, month, year, otherMonth: false });
+  const total = Math.ceil(cells.length / 7) * 7;
+  for (let d = 1; cells.length < total; d++) {
+    const nm = month === 11 ? 0 : month + 1;
+    const ny = month === 11 ? year + 1 : year;
+    cells.push({ day: d, month: nm, year: ny, otherMonth: true });
+  }
+
+  const filterHtml = mode === 'admin' ? `
+    <div class="cal-filter">
+      <select id="calAdminFilter">
+        <option value="all">Semua Teknisi</option>
+        ${USERS.filter(u => u.role === 'teknisi').map(u =>
+          `<option value="${u.id}" ${state.filterUser == u.id ? 'selected' : ''}>${escapeHtml(u.name)}</option>`
+        ).join('')}
+      </select>
+    </div>` : '';
+
+  let html = `
+    <div class="cal-toolbar">
+      <div class="cal-nav">
+        <button type="button" data-cal-prev="${mode}" title="Bulan sebelumnya">‹</button>
+        <div class="cal-title">${namaBulan(month+1)} <span class="year">${year}</span></div>
+        <button type="button" data-cal-next="${mode}" title="Bulan berikutnya">›</button>
+        <button type="button" data-cal-today="${mode}" title="Bulan ini" style="width:auto;padding:0 12px;font-size:12px">Hari Ini</button>
+        <button type="button" data-cal-y2026="${mode}" title="Lompat ke Jan 2026" style="width:auto;padding:0 12px;font-size:12px">2026</button>
+      </div>
+      ${filterHtml}
+    </div>
+    <div class="cal-weekdays">
+      ${NAMA_HARI.map((h, i) => `<div class="${i===6?'sun':''}">${h}</div>`).join('')}
+    </div>
+    <div class="cal-grid">
+  `;
+
+  cells.forEach(c => {
+    const key = ymd(c.year, c.month, c.day);
+    const dayRecords = byDate[key] || [];
+    const isSun = new Date(c.year, c.month, c.day).getDay() === 0;
+    const holiday = HOLIDAYS_2026[key];
+    const classes = ['cal-cell'];
+    if (c.otherMonth) classes.push('other-month');
+    if (isToday(c.year, c.month, c.day) && !c.otherMonth) classes.push('today');
+    if (isSun && !c.otherMonth) classes.push('sun');
+    if (holiday && !c.otherMonth) classes.push('holiday');
+    if (dayRecords.length > 0) classes.push('has-data');
+
+    const seen = new Set();
+    const dots = dayRecords
+      .map(a => a.tipe)
+      .filter(t => { if (seen.has(t)) return false; seen.add(t); return true; })
+      .map(t => `<span class="cal-dot ${t}"></span>`).join('');
+
+    const isSelected = state.selectedDate === key;
+
+    html += `
+      <div class="${classes.join(' ')}" data-cal-date="${key}" ${isSelected?'style="outline:2px solid var(--brand-magenta);outline-offset:-2px"':''}>
+        <div class="cal-day">${c.day}</div>
+        ${holiday && !c.otherMonth ? `<div class="cal-holiday-label">${escapeHtml(holiday)}</div>` : ''}
+        ${dots ? `<div class="cal-dots">${dots}</div>` : ''}
+      </div>`;
+  });
+
+  html += `</div>`;
+
+  html += `
+    <div class="cal-legend">
+      <span><span class="cal-dot masuk"></span>Masuk</span>
+      <span><span class="cal-dot izin"></span>Izin</span>
+      <span><span class="cal-dot cuti"></span>Cuti</span>
+      <span><span class="cal-dot sakit"></span>Sakit</span>
+      <span style="color:var(--g-red)">● Libur Nasional</span>
+    </div>`;
+
+  const monthData = dataScoped.filter(a => a.tanggal && a.tanggal.startsWith(`${year}-${pad(month+1)}`));
+  const c = t => monthData.filter(a => a.tipe === t).length;
+  html += `
+    <div class="cal-summary">
+      <div class="cal-sum-item masuk"><div class="n">${c('masuk')}</div><div class="l">Masuk</div></div>
+      <div class="cal-sum-item izin"><div class="n">${c('izin')}</div><div class="l">Izin</div></div>
+      <div class="cal-sum-item cuti"><div class="n">${c('cuti')}</div><div class="l">Cuti</div></div>
+      <div class="cal-sum-item sakit"><div class="n">${c('sakit')}</div><div class="l">Sakit</div></div>
+    </div>`;
+
+  if (state.selectedDate) {
+    const recs = byDate[state.selectedDate] || [];
+    html += `<div class="cal-day-panel">
+      <h4>Detail <span class="date-badge">${state.selectedDate}</span></h4>`;
+    if (recs.length === 0) {
+      html += `<p class="empty" style="padding:14px 0">Tidak ada absensi di tanggal ini.</p>`;
+    } else {
+      html += `<div class="list">${recs.map(a => renderItem(a, { showName: mode === 'admin', editable: mode === 'admin', showStatus: true })).join('')}</div>`;
+    }
+    html += `</div>`;
+  }
+
+  container.innerHTML = html;
+
+  bindThumbClicks();
+  if (mode === 'admin') bindAdminActions();
+
+  container.querySelectorAll('[data-cal-prev]').forEach(b => b.onclick = () => {
+    state.month--; if (state.month < 0) { state.month = 11; state.year--; }
+    state.selectedDate = null; renderCalendar(mode);
+  });
+  container.querySelectorAll('[data-cal-next]').forEach(b => b.onclick = () => {
+    state.month++; if (state.month > 11) { state.month = 0; state.year++; }
+    state.selectedDate = null; renderCalendar(mode);
+  });
+  container.querySelectorAll('[data-cal-today]').forEach(b => b.onclick = () => {
+    const t = new Date();
+    state.year = t.getFullYear(); state.month = t.getMonth();
+    state.selectedDate = null; renderCalendar(mode);
+  });
+  container.querySelectorAll('[data-cal-y2026]').forEach(b => b.onclick = () => {
+    state.year = 2026; state.month = 0; state.selectedDate = null;
+    renderCalendar(mode);
+  });
+
+  container.querySelectorAll('[data-cal-date]').forEach(cell => {
+    cell.onclick = () => {
+      const key = cell.dataset.calDate;
+      if (mode === 'teknisi' && !cell.classList.contains('other-month') && key.startsWith('2026-')) {
+        $('tanggal').value = key;
+      }
+      state.selectedDate = (state.selectedDate === key) ? null : key;
+      renderCalendar(mode);
+    };
+  });
+
+  const filterSel = $('calAdminFilter');
+  if (filterSel) {
+    filterSel.onchange = () => {
+      state.filterUser = filterSel.value === 'all' ? 'all' : parseInt(filterSel.value);
+      state.selectedDate = null;
+      renderCalendar('admin');
+    };
+  }
+}
+
+/* ============================================================
+   MINI CALENDAR
+   ============================================================ */
+function renderMiniCal() {
+  const wrap = $('miniCalWrap');
+  const month = miniCalMonth;
+  const year = MINI_CAL_YEAR;
+
+  const absensiUser = getApprovedByUser(currentUser.id);
+  const dateSet = new Set(absensiUser.map(a => a.tanggal));
+
+  const firstDay = new Date(year, month, 1);
+  const firstWeekday = (firstDay.getDay() + 6) % 7;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+  const selectedVal = $('tanggal').value;
+
+  let html = `
+    <div class="mini-cal-toolbar">
+      <div class="mini-cal-nav">
+        <button type="button" data-mini-prev title="Sebelumnya">‹</button>
+      </div>
+      <div class="mini-cal-title">${namaBulan(month+1)} <span class="yr">${year}</span></div>
+      <div class="mini-cal-nav">
+        <button type="button" data-mini-next title="Berikutnya">›</button>
+      </div>
+    </div>
+    <div class="mini-cal-grid">
+      ${['S','S','R','K','J','S','M'].map((d,i) => `<div class="mini-cal-wd ${i===6?'sun':''}">${d}</div>`).join('')}
+  `;
+
+  for (let i = 0; i < firstWeekday; i++) {
+    html += `<div class="mini-cal-cell other"></div>`;
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = `${year}-${pad(month+1)}-${pad(d)}`;
+    const dow = new Date(year, month, d).getDay();
+    const isSun = dow === 0;
+    const holiday = HOLIDAYS_2026[key];
+    const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === d;
+    const isSelected = selectedVal === key;
+    const hasData = dateSet.has(key);
+
+    const cls = ['mini-cal-cell'];
+    if (isSun) cls.push('sun');
+    if (holiday) cls.push('holiday');
+    if (isToday) cls.push('today');
+    if (isSelected) cls.push('selected');
+    if (hasData) cls.push('has-data');
+
+    const title = holiday ? `${key} • ${holiday}` : key;
+    html += `<button type="button" class="${cls.join(' ')}" data-mini-date="${key}" title="${escapeHtml(title)}">${d}</button>`;
+  }
+
+  const total = Math.ceil((firstWeekday + daysInMonth) / 7) * 7;
+  for (let i = firstWeekday + daysInMonth; i < total; i++) {
+    html += `<div class="mini-cal-cell other"></div>`;
+  }
+  html += `</div>`;
+
+  wrap.innerHTML = html;
+
+  wrap.querySelector('[data-mini-prev]').onclick = () => {
+    miniCalMonth--;
+    if (miniCalMonth < 0) miniCalMonth = 11;
+    renderMiniCal();
+  };
+  wrap.querySelector('[data-mini-next]').onclick = () => {
+    miniCalMonth++;
+    if (miniCalMonth > 11) miniCalMonth = 0;
+    renderMiniCal();
+  };
+  wrap.querySelectorAll('[data-mini-date]').forEach(btn => {
+    btn.onclick = () => {
+      $('tanggal').value = btn.dataset.miniDate;
+      updateFormForType();
+      renderMiniCal();
+      setTimeout(() => $('miniCalWrap').classList.add('hidden'), 150);
+    };
+  });
+}
+
+$('toggleMiniCal').addEventListener('click', () => {
+  const wrap = $('miniCalWrap');
+  if (wrap.classList.contains('hidden')) {
+    wrap.classList.remove('hidden');
+    renderMiniCal();
+  } else {
+    wrap.classList.add('hidden');
+  }
+});
+
+/* ============================================================
+   LAPORAN BULANAN
+   ============================================================ */
+function initReportControls() {
+  const now = new Date();
+  const yearSelect = $('repYear');
+  if (yearSelect.options.length === 0) {
+    const cy = now.getFullYear();
+    for (let y = cy + 1; y >= cy - 3; y--) {
+      const opt = document.createElement('option');
+      opt.value = y; opt.textContent = y;
+      yearSelect.appendChild(opt);
+    }
+  }
+  if (!$('repMonth').dataset.inited) {
+    $('repMonth').value = now.getMonth() + 1;
+    $('repYear').value = now.getFullYear();
+    $('repMonth').dataset.inited = '1';
+  }
+}
+
+$('repLoad').addEventListener('click', buildReport);
+
+function buildReport() {
+  const month = parseInt($('repMonth').value);
+  const year = parseInt($('repYear').value);
+  const mm = pad(month);
+  const prefix = `${year}-${mm}`;
+  const data = getApprovedAbsensi().filter(a => a.tanggal && a.tanggal.startsWith(prefix));
+  const output = $('reportOutput');
+
+  const teknisiList = USERS.filter(u => u.role === 'teknisi');
+  const rows = teknisiList.map(u => {
+    const items = data.filter(a => a.userId === u.id);
+    const counts = { masuk: 0, izin: 0, cuti: 0, sakit: 0 };
+    items.forEach(a => { if (counts[a.tipe] != null) counts[a.tipe]++; });
+    return { user: u, ...counts, total: items.length };
+  });
+
+  const t = rows.reduce((s, r) => ({
+    masuk: s.masuk + r.masuk, izin: s.izin + r.izin,
+    cuti: s.cuti + r.cuti, sakit: s.sakit + r.sakit, total: s.total + r.total
+  }), { masuk:0, izin:0, cuti:0, sakit:0, total:0 });
+
+  if (data.length === 0) {
+    output.innerHTML = `
+      <div class="report-card">
+        <div class="report-title">
+          Laporan Bulan ${namaBulan(month)} ${year}
+          <div class="sub">Tidak ada data absensi yang disetujui pada bulan ini.</div>
+        </div>
+        <div style="padding:30px;text-align:center;color:var(--text-3);font-family:Roboto,sans-serif">
+          Belum ada data untuk periode ini.
+        </div>
+      </div>`;
+    return;
+  }
+
+  let html = `
+    <div class="report-card">
+      <div class="report-title">
+        Laporan Bulan ${namaBulan(month)} ${year}
+        <div class="sub">Periode ${mm}/${year} • ${data.length} record • ${rows.filter(r => r.total > 0).length} teknisi aktif • Hanya data disetujui</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Teknisi</th>
+              <th class="center">Masuk</th>
+              <th class="center">Izin</th>
+              <th class="center">Cuti</th>
+              <th class="center">Sakit</th>
+              <th class="center">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td>${escapeHtml(r.user.name)}</td>
+                <td class="center">${r.masuk}</td>
+                <td class="center">${r.izin}</td>
+                <td class="center">${r.cuti}</td>
+                <td class="center">${r.sakit}</td>
+                <td class="center">${r.total}</td>
+              </tr>`).join('')}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>TOTAL</td>
+              <td class="center">${t.masuk}</td>
+              <td class="center">${t.izin}</td>
+              <td class="center">${t.cuti}</td>
+              <td class="center">${t.sakit}</td>
+              <td class="center">${t.total}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="report-actions">
+        <button class="btn btn-outline" id="repExportDetail">⬇️ Export CSV Detail</button>
+        <button class="btn btn-success" id="repExportSummary">⬇️ Export CSV Rekap</button>
+      </div>
+    </div>`;
+
+  html += teknisiList.map(u => {
+    const items = data.filter(a => a.userId === u.id)
+      .sort((a,b) => a.tanggal.localeCompare(b.tanggal));
+    if (items.length === 0) {
+      return `
+        <div class="report-card">
+          <div class="report-title" style="background:linear-gradient(135deg,#5f6368,#80868b)">
+            ${escapeHtml(u.name)}
+            <div class="sub">Tidak ada data di bulan ini</div>
+          </div>
+        </div>`;
+    }
+    return `
+      <div class="report-card">
+        <div class="report-title" style="background:linear-gradient(135deg,#2a2d7a,#ec008c)">
+          ${escapeHtml(u.name)}
+          <div class="sub">${items.length} record</div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Tanggal</th><th>Jam</th><th>Jenis</th>
+                <th>Lokasi</th><th>Catatan</th><th>Peta</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${items.map(a => `
+                <tr>
+                  <td>${a.tanggal}</td>
+                  <td>${a.jam || '-'}</td>
+                  <td><span class="pill ${tipePillClass(a.tipe)}">${tipeLabel(a.tipe)}</span></td>
+                  <td>${a.lokasi ? escapeHtml(a.lokasi) : '<span style="color:var(--text-3)">-</span>'}</td>
+                  <td>${a.catatan ? escapeHtml(a.catatan) : '<span style="color:var(--text-3)">-</span>'}</td>
+                  <td>${(a.lat != null && a.lng != null) ?
+                    `<a href="https://www.google.com/maps?q=${a.lat},${a.lng}" target="_blank" rel="noopener" style="color:var(--g-blue)">Lihat</a>` :
+                    '<span style="color:var(--text-3)">-</span>'}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  }).join('');
+
+  output.innerHTML = html;
+  $('repExportSummary').onclick = () => exportSummary(rows, month, year);
+  $('repExportDetail').onclick = () => exportDetail(data, month, year);
+}
+
+function csvEscape(s) { if (s == null) return ''; return '"' + String(s).replace(/"/g, '""') + '"'; }
+function downloadCSV(filename, content) {
+  const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+function exportSummary(rows, month, year) {
+  const lines = [];
+  lines.push(csvEscape(`Laporan Rekap Absensi ${namaBulan(month)} ${year} (Disetujui)`));
+  lines.push('');
+  lines.push(['Teknisi','Masuk','Izin','Cuti','Sakit','Total'].map(csvEscape).join(','));
+  rows.forEach(r => lines.push([r.user.name, r.masuk, r.izin, r.cuti, r.sakit, r.total].map(csvEscape).join(',')));
+  const t = rows.reduce((s, r) => ({
+    masuk: s.masuk + r.masuk, izin: s.izin + r.izin,
+    cuti: s.cuti + r.cuti, sakit: s.sakit + r.sakit, total: s.total + r.total
+  }), { masuk:0, izin:0, cuti:0, sakit:0, total:0 });
+  lines.push(['TOTAL', t.masuk, t.izin, t.cuti, t.sakit, t.total].map(csvEscape).join(','));
+  downloadCSV(`rekap-absensi-${year}-${pad(month)}.csv`, lines.join('\n'));
+}
+function exportDetail(data, month, year) {
+  const lines = [];
+  lines.push(csvEscape(`Detail Absensi ${namaBulan(month)} ${year} (Disetujui)`));
+  lines.push('');
+  lines.push(['Tanggal','Jam','Nama Teknisi','Jenis','Lokasi','Latitude','Longitude','Google Maps','Catatan','Disetujui Oleh'].map(csvEscape).join(','));
+  data.slice().sort((a,b) => a.tanggal.localeCompare(b.tanggal)).forEach(a => {
+    const mapsUrl = (a.lat != null && a.lng != null) ? `https://www.google.com/maps?q=${a.lat},${a.lng}` : '';
+    lines.push([
+      a.tanggal, a.jam || '', a.nama, tipeLabel(a.tipe), a.lokasi || '',
+      a.lat != null ? a.lat : '', a.lng != null ? a.lng : '',
+      mapsUrl, a.catatan || '', a.approvedBy || ''
+    ].map(csvEscape).join(','));
+  });
+  downloadCSV(`detail-absensi-${year}-${pad(month)}.csv`, lines.join('\n'));
+}
+
+/* ============================================================
+   MODAL FOTO
+   ============================================================ */
+function bindThumbClicks() {
+  document.querySelectorAll('.thumb').forEach(img => {
+    img.onclick = () => {
+      $('modalImg').src = img.dataset.src;
+      $('photoModal').classList.add('show');
+    };
+  });
+}
+$('closeModal').addEventListener('click', () => $('photoModal').classList.remove('show'));
+$('photoModal').addEventListener('click', (e) => { if (e.target.id === 'photoModal') $('photoModal').classList.remove('show'); });
+</script>
+</body>
+</html>
